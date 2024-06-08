@@ -1,4 +1,212 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Swap - Capture</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Face Swap - Capture</h1>
+        <div class="video-container">
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="button-container">
+            <button id="capture">Capture</button>
+        </div>
+    </div>
+    <script src="capture.js"></script>
+</body>
+</html>
+
+display.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Swap - Display</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Face Swap - Display</h1>
+        <div class="photo-container">
+            <img id="capturedPhoto" alt="Captured Photo">
+        </div>
+        <div class="button-container">
+            <button id="swap">Swap Faces</button>
+        </div>
+    </div>
+    <script src="display.js"></script>
+</body>
+</html>
+
+
+result.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Swap - Result</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Face Swap - Result</h1>
+        <div class="result-container">
+            <img id="result" alt="Result Image">
+        </div>
+    </div>
+    <script src="result.js"></script>
+</body>
+</html>
+
+
+capture.js
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const captureButton = document.getElementById('capture');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        console.error("Error accessing camera: ", err);
+    });
+
+captureButton.addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/jpeg');
+    localStorage.setItem('capturedImage', dataUrl);
+    window.location.href = 'display.html';
+});
+
+
+display.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const capturedPhoto = document.getElementById('capturedPhoto');
+    const swapButton = document.getElementById('swap');
+
+    const dataUrl = localStorage.getItem('capturedImage');
+    capturedPhoto.src = dataUrl;
+
+    swapButton.addEventListener('click', async () => {
+        try {
+            const sourceImg = dataUrl.split(',')[1];
+
+            const response = await fetch('/faceswap', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sourceImg })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to swap faces');
+            }
+
+            const data = await response.json();
+            console.log('Response data:', data);
+
+            // Adjust based on the actual response structure
+            if (data.image) {
+                localStorage.setItem('swappedImage', `data:image/jpeg;base64,${data.image}`);
+                window.location.href = 'result.html';
+            } else {
+                throw new Error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error swapping faces:', error);
+            alert('An error occurred while swapping faces. Please try again.');
+        }
+    });
+});
+
+
+result.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const resultImg = document.getElementById('result');
+    const swappedImage = localStorage.getItem('swappedImage');
+    resultImg.src = swappedImage;
+});
+
+
+styles.css
+
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/assets/background.png');
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.video-container, .photo-container, .result-container {
+    position: relative;
+    display: inline-block;
+}
+
+#video, #capturedPhoto, #result {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+
 server.js
+
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -23,10 +231,13 @@ async function toB64(imgPath) {
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Serve assets files
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
+
 app.post('/faceswap', async (req, res) => {
     try {
         const { sourceImg } = req.body;
-        const targetImgPath = '/Users/home/Downloads/faceswap/superman.jpeg';
+        const targetImgPath = path.join(__dirname, '../assets/superman.jpeg');
         const targetImg = await toB64(targetImgPath);
 
         const data = {
@@ -48,161 +259,3 @@ app.post('/faceswap', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
-
-
-
-index.html
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Swap</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Face Swap</h1>
-        <div class="video-container">
-            <video id="video" autoplay></video>
-            <canvas id="canvas"></canvas>
-        </div>
-        <div class="result-container">
-            <img id="result" alt="Result Image">
-        </div>
-        <div class="button-container">
-            <button id="capture">Capture</button>
-            <button id="swap">Swap Faces</button>
-        </div>
-        
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
-
-
-
-script.js
-
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const captureButton = document.getElementById('capture');
-const swapButton = document.getElementById('swap');
-const resultImg = document.getElementById('result');
-
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        video.srcObject = stream;
-    })
-    .catch(err => {
-        console.error("Error accessing camera: ", err);
-    });
-
-captureButton.addEventListener('click', () => {
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    video.style.display = 'none';
-    canvas.style.display = 'block';
-});
-
-swapButton.addEventListener('click', async () => {
-    try {
-        const sourceImg = canvas.toDataURL('image/jpeg').split(',')[1];
-
-        const response = await fetch('/faceswap', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ sourceImg })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to swap faces');
-        }
-
-        const data = await response.json();
-        console.log('Response data:', data);
-
-        // Adjust based on the actual response structure
-        if (data.image) {
-            resultImg.src = `data:image/jpeg;base64,${data.image}`;
-            resultImg.style.display = 'block';
-        } else {
-            throw new Error('Invalid response data');
-        }
-    } catch (error) {
-        console.error('Error swapping faces:', error);
-        alert('An error occurred while swapping faces. Please try again.');
-    }
-});
-
-
-styles.css
-
-/* styles.css */
-
-body {
-    font-family: Arial, sans-serif;
-    background-image: url('background.png');
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-}
-
-.video-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#video {
-    width: 100%;
-    max-width: 640px;
-    height: auto;
-}
-
-#canvas {
-    display: none;
-}
-
-.button-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.result-container {
-    text-align: center;
-}
-
-#result {
-    max-width: 640px;
-    height: auto;
-    display: none;
-    margin-top: 20px;
-}

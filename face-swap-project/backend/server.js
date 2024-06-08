@@ -26,13 +26,14 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 app.post('/faceswap', async (req, res) => {
     try {
-        const { sourceImg } = req.body;
-        const targetImgPath = path.join(__dirname, '../assets/superman.jpeg');
-        const targetImg = await toB64(targetImgPath);
+        const { sourceImg, targetImg } = req.body;
+
+        const targetImgPath = path.join(__dirname, '..', targetImg);
+        const targetImgBase64 = await toB64(targetImgPath);
 
         const data = {
             "source_img": sourceImg,
-            "target_img": targetImg,
+            "target_img": targetImgBase64,
             "face_restore": "codeformer-v0.1.0.pth",
             "base64": true // Set to true to get the base64 encoded result image
         };

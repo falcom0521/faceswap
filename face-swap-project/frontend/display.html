@@ -3,14 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Captured Photo</title>
+    <title>Face Swap - Display</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .selected {
+            border: 2px solid blue;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Display Captured Photo</h1>
+        <h1>Face Swap - Display</h1>
         <div class="photo-container">
             <img id="capturedPhoto" alt="Captured Photo">
+        </div>
+        <div class="target-images">
+            <h2>Select Target Image:</h2>
+            <div class="image-option">
+                <img src="/assets/captain.jpeg" alt="Target Image 1" class="target-image" data-src="/assets/captain.jpeg">
+            </div>
+            <div class="image-option">
+                <img src="/assets/superman.jpeg" alt="Target Image 2" class="target-image" data-src="/assets/superman.jpeg">
+            </div>
+            <div class="image-option">
+                <img src="/assets/jack.jpeg" alt="Target Image 3" class="target-image" data-src="/assets/jack.jpeg">
+            </div>  
+            <div class="image-option">
+                <img src="/assets/monalisa.jpeg" alt="Target Image 4" class="target-image" data-src="/assets/monalisa.jpeg">
+            </div>
         </div>
         <div class="button-container">
             <button id="swap">Swap Faces</button>
