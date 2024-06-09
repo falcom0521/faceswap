@@ -1,7 +1,10 @@
+// display.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const capturedPhoto = document.getElementById('capturedPhoto');
     const swapButton = document.getElementById('swap');
     const targetImages = document.querySelectorAll('.target-image');
+    const buttons = document.querySelectorAll('button');
 
     let selectedTargetImage = '/assets/superman.jpeg'; // Default target image
 
@@ -45,5 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error swapping faces:', error);
             alert('An error occurred while swapping faces. Please try again.');
         }
+    });
+
+    // Add event listeners to change button color on click
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+        });
     });
 });
