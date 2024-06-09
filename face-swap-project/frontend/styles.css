@@ -69,7 +69,7 @@ button:hover {
 }
 
 button.selected {
-    background-color: #28a745;
+    background-color:#00ff3c;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
 
@@ -134,3 +134,4 @@ button.selected {
 .button-container {
     margin-top: 20px;
 }
+
