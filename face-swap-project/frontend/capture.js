@@ -1,6 +1,7 @@
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture');
+const uploadPageButton = document.getElementById('uploadPage');
 
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
@@ -18,4 +19,8 @@ captureButton.addEventListener('click', () => {
     const dataUrl = canvas.toDataURL('image/jpeg');
     localStorage.setItem('capturedImage', dataUrl);
     window.location.href = 'display.html';
+});
+
+uploadPageButton.addEventListener('click', () => {
+    window.location.href = 'upload.html';
 });

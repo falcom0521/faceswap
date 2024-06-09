@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Swap - Result</title>
+    <title>Face Swap - Upload</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Face Swap - Result</h1>
-        <div class="result-container">
-            <img id="result" alt="Result Image">
-        </div>
+        <h1>Upload Target Images</h1>
+        <input type="file" id="fileInput" multiple>
         <div class="button-container">
-            <button id="backButton">Back to Index</button>
+            <button id="saveImages">Save Images</button>
+            <button id="backToCapture">Back to Capture</button>
         </div>
     </div>
-    <script src="result.js"></script>
+    <script src="upload.js"></script>
 </body>
 </html>

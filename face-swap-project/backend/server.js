@@ -26,23 +26,36 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 app.post('/faceswap', async (req, res) => {
     try {
+        console.log('Request received:', req.body); // Log the request payload
         const { sourceImg, targetImg } = req.body;
-        const targetImgPath = path.join(__dirname, `..${targetImg}`);
+
+        // Decode base64 data for source and target images
+        const sourceImgBuffer = Buffer.from(sourceImg, 'base64');
+        const targetImgBuffer = Buffer.from(targetImg, 'base64');
+
+        // Write target image to a temporary file
+        const targetImgPath = path.join(__dirname, 'temp', 'target_img.jpg'); // Define your temporary directory here
+        fs.writeFileSync(targetImgPath, targetImgBuffer);
+
+        // Perform face swap
         const targetImgB64 = await toB64(targetImgPath);
+
+        // Remove temporary file
+        fs.unlinkSync(targetImgPath);
 
         const data = {
             "source_img": sourceImg,
             "target_img": targetImgB64,
             "face_restore": "codeformer-v0.1.0.pth",
-            "base64": true // Set to true to get the base64 encoded result image
+            "base64": true
         };
 
         const response = await axios.post(url, data, { headers: { 'x-api-key': api_key } });
-        console.log(response.data); // Log the response data for debugging
+        console.log('Response received:', response.data); // Log the response data
         res.json(response.data);
     } catch (error) {
-        console.error('Error:', error.response ? error.response.data : error.message);
-        res.status(500).send('Error processing the request');
+        console.error('Error swapping faces:', error);
+        res.status(500).send('Error processing the request: ' + error.message); // Send detailed error message in response
     }
 });
 

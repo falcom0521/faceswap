@@ -1,34 +1,42 @@
-// display.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const capturedPhoto = document.getElementById('capturedPhoto');
     const swapButton = document.getElementById('swap');
-    const targetImages = document.querySelectorAll('.target-image');
-    const buttons = document.querySelectorAll('button');
-
-    let selectedTargetImage = '/assets/superman.jpeg'; // Default target image
-
+    const imageOptions = document.getElementById('imageOptions');
     const dataUrl = localStorage.getItem('capturedImage');
+    const targetImages = JSON.parse(localStorage.getItem('targetImages')) || [];
+
     capturedPhoto.src = dataUrl;
 
-    targetImages.forEach(img => {
+    targetImages.forEach(src => {
+        const div = document.createElement('div');
+        div.classList.add('image-option');
+        const img = document.createElement('img');
+        img.src = src;
+        img.classList.add('target-image');
+        img.dataset.src = src;
+        div.appendChild(img);
+        imageOptions.appendChild(div);
+
         img.addEventListener('click', () => {
-            targetImages.forEach(image => image.classList.remove('selected'));
+            document.querySelectorAll('.target-image').forEach(image => image.classList.remove('selected'));
             img.classList.add('selected');
-            selectedTargetImage = img.getAttribute('data-src');
+            selectedTargetImage = img.src; // Change here to get the image source
         });
     });
+
+    let selectedTargetImage = targetImages.length > 0 ? targetImages[0] : null;
 
     swapButton.addEventListener('click', async () => {
         try {
             const sourceImg = dataUrl.split(',')[1];
+            const targetImg = selectedTargetImage.split(',')[1]; // Change here to get base64 data
 
             const response = await fetch('/faceswap', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ sourceImg, targetImg: selectedTargetImage })
+                body: JSON.stringify({ sourceImg, targetImg }) // Update payload to include base64 data
             });
 
             if (!response.ok) {
@@ -36,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            console.log('Response data:', data);
-
             if (data.image) {
                 localStorage.setItem('swappedImage', `data:image/jpeg;base64,${data.image}`);
                 window.location.href = 'result.html';
@@ -48,13 +54,5 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error swapping faces:', error);
             alert('An error occurred while swapping faces. Please try again.');
         }
-    });
-
-    // Add event listeners to change button color on click
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            buttons.forEach(btn => btn.classList.remove('selected'));
-            button.classList.add('selected');
-        });
     });
 });
