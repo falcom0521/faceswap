@@ -26,7 +26,7 @@ app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 app.post('/faceswap', async (req, res) => {
     try {
-        console.log('Request received:', req.body); // Log the request payload
+        console.log('Face swap request received'); // Log a simple message indicating a request was received
         const { sourceImg, targetImg } = req.body;
 
         // Decode base64 data for source and target images
@@ -51,10 +51,10 @@ app.post('/faceswap', async (req, res) => {
         };
 
         const response = await axios.post(url, data, { headers: { 'x-api-key': api_key } });
-        console.log('Response received:', response.data); // Log the response data
+        console.log('Face swap successful'); // Log a concise message
         res.json(response.data);
     } catch (error) {
-        console.error('Error swapping faces:', error);
+        console.error('Error swapping faces:', error.message); // Log the error message without details
         res.status(500).send('Error processing the request: ' + error.message); // Send detailed error message in response
     }
 });

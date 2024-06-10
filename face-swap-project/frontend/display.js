@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedTargetImage = targetImages.length > 0 ? targetImages[0] : null;
 
     swapButton.addEventListener('click', async () => {
+        swapButton.classList.add('clicked'); // Add the 'clicked' class when the button is clicked
         try {
             const sourceImg = dataUrl.split(',')[1];
             const targetImg = selectedTargetImage.split(',')[1]; // Change here to get base64 data
@@ -45,13 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             if (data.image) {
+                console.log('Face swap successful'); // Log a concise message
                 localStorage.setItem('swappedImage', `data:image/jpeg;base64,${data.image}`);
                 window.location.href = 'result.html';
             } else {
                 throw new Error('Invalid response data');
             }
         } catch (error) {
-            console.error('Error swapping faces:', error);
+            console.error('Error swapping faces:', error.message); // Log only the error message
             alert('An error occurred while swapping faces. Please try again.');
         }
     });

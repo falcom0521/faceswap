@@ -69,8 +69,13 @@ button:hover {
 }
 
 button.selected {
-    background-color:#00ff3c;
+    background-color: #00ff3c;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Style for clicked button */
+button.clicked {
+    background-color: #ff5733; /* Change to the color you want when the button is clicked */
 }
 
 /* Photo and target image styles */
@@ -134,4 +139,3 @@ button.selected {
 .button-container {
     margin-top: 20px;
 }
-
