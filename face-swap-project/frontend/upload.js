@@ -22,3 +22,16 @@ saveImagesButton.addEventListener('click', () => {
 backToCaptureButton.addEventListener('click', () => {
     window.location.href = 'index.html';
 });
+
+document.getElementById("fileInput").addEventListener("change", function(event) {
+    const fileList = event.target.files;
+    const imageDetails = document.getElementById("imageDetails");
+    imageDetails.innerHTML = "";
+    for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const fileName = file.name;
+        const listItem = document.createElement("p");
+        listItem.textContent = `Name: ${fileName}`;
+        imageDetails.appendChild(listItem);
+    }
+});

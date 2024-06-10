@@ -26,7 +26,9 @@ body {
 h1 {
     margin-bottom: 20px;
 }
-
+p {
+    font-size: larger;
+}
 /* Video and photo container styles */
 
 .video-container, .photo-container, .result-container {
@@ -55,13 +57,14 @@ h1 {
 button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #61a6f0;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     margin: 5px;
+    border-radius: 50px;
 }
 
 button:hover {
@@ -75,7 +78,7 @@ button.selected {
 
 /* Style for clicked button */
 button.clicked {
-    background-color: #ff5733; /* Change to the color you want when the button is clicked */
+    background-color: #74ff33; /* Change to the color you want when the button is clicked */
 }
 
 /* Photo and target image styles */
@@ -106,6 +109,7 @@ button.clicked {
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
+    margin-bottom: 10px;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -138,4 +142,55 @@ button.clicked {
 
 .button-container {
     margin-top: 20px;
+}
+
+/* Styles for the index page */
+
+/* Center the capture button */
+#capture {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Style for the upload image button */
+#uploadPage {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 16px; /* Adjust padding as needed */
+    font-size: 14px; /* Adjust font size as needed */
+    border: none;
+    border-radius: 5px;
+    background-color: #5D8AA8;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#uploadPage:hover {
+    background-color: #0056b3;
+}
+
+.choose-file-btn {
+    background-color: #0693e4;
+    
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    border-radius: 50px;
+}
+
+.file-input {
+    display: none;
+}
+
+.image-details {
+    margin-bottom: 20px;
+    font-size: 14px;
 }
