@@ -27,8 +27,8 @@ app.use("/assets", express.static(path.join(__dirname, "../assets")));
 app.post("/faceswap", async (req, res) => {
   try {
     console.log("Face swap request received"); // Log a simple message indicating a request was received
-    console.log(sourceImg);
     const { sourceImg, targetImg } = req.body;
+    console.log(req.body);
 
     // Decode base64 data for source and target images
     const sourceImgBuffer = Buffer.from(sourceImg, "base64");
