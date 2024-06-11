@@ -28,7 +28,6 @@ app.post("/faceswap", async (req, res) => {
   try {
     console.log("Face swap request received"); // Log a simple message indicating a request was received
     const { sourceImg, targetImg } = req.body;
-
     // Decode base64 data for source and target images
     const sourceImgBuffer = Buffer.from(sourceImg, "base64");
     const targetImgBuffer = Buffer.from(targetImg, "base64");
