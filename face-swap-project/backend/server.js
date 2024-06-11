@@ -28,25 +28,24 @@ app.post("/faceswap", async (req, res) => {
   try {
     console.log("Face swap request received"); // Log a simple message indicating a request was received
     const { sourceImg, targetImg } = req.body;
-    console.log(req.body);
 
     // Decode base64 data for source and target images
     const sourceImgBuffer = Buffer.from(sourceImg, "base64");
     const targetImgBuffer = Buffer.from(targetImg, "base64");
 
     // Write target image to a temporary file
-    const targetImgPath = path.join(__dirname, "temp", "target_img.jpg"); // Define your temporary directory here
-    fs.writeFileSync(targetImgPath, targetImgBuffer);
+    // const targetImgPath = path.join(__dirname, "temp", "target_img.jpg"); // Define your temporary directory here
+    // fs.writeFileSync(targetImgPath, targetImgBuffer);
 
     // Perform face swap
-    const targetImgB64 = await toB64(targetImgPath);
+    // const targetImgB64 = await toB64(targetImgPath);
 
     // Remove temporary file
-    fs.unlinkSync(targetImgPath);
+    // fs.unlinkSync(targetImgPath);
 
     const data = {
       source_img: sourceImg,
-      target_img: targetImgB64,
+      target_img: targetImg,
       face_restore: "codeformer-v0.1.0.pth",
       base64: true,
     };
