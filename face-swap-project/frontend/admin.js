@@ -94,6 +94,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load images initially
     loadImages();
 
-    // Set an interval to auto-refresh the images every 30 seconds
-    setInterval(loadImages, 20000); // 30000 milliseconds = 30 seconds
+
 });
