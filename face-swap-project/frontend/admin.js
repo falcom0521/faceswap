@@ -12,60 +12,88 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage();
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     const imagesContainer = document.getElementById('imagesContainer');
+    const deleteAllBtn = document.getElementById('deleteAllBtn');
 
-    try {
-        // Reference to the images folder
-        const storageRef = storage.ref().child('images/');
-        const listResult = await storageRef.listAll();
+    const loadImages = async () => {
+        imagesContainer.innerHTML = ''; // Clear the container before loading images
 
-        // Iterate through each item in the folder and get the download URL
-        for (const itemRef of listResult.items) {
-            const downloadURL = await itemRef.getDownloadURL();
-            displayImage(downloadURL);
+        try {
+            // Reference to the images folder
+            const storageRef = storage.ref().child('images/');
+            const listResult = await storageRef.listAll();
+
+            // Iterate through each item in the folder and get the download URL
+            for (const itemRef of listResult.items) {
+                const downloadURL = await itemRef.getDownloadURL();
+                displayImage(downloadURL, itemRef);
+            }
+        } catch (error) {
+            console.error('Error listing images:', error);
         }
-    } catch (error) {
-        console.error('Error listing images:', error);
-    }
-});
+    };
 
-function displayImage(url) {
-    const imagesContainer = document.getElementById('imagesContainer');
-    const imgElement = document.createElement('img');
-    imgElement.src = url;
-    imgElement.className = 'uploaded-image';
-    imgElement.addEventListener('click', () => {
-        printImage(url);
+    deleteAllBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete all images?')) {
+            try {
+                // Reference to the images folder
+                const storageRef = storage.ref().child('images/');
+                const listResult = await storageRef.listAll();
+
+                for (const itemRef of listResult.items) {
+                    await itemRef.delete();
+                }
+                imagesContainer.innerHTML = '';
+                alert('All images have been deleted.');
+            } catch (error) {
+                console.error('Error deleting images:', error);
+            }
+        }
     });
-    imagesContainer.appendChild(imgElement);
-}
 
-function printImage(url) {
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Print Image</title>
-            <style>
-                body {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                    margin: 0;
-                }
-                img {
-                    max-width: 100%;
-                    max-height: 100%;
-                }
-            </style>
-        </head>
-        <body>
-            <img src="${url}" />
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-}
+    const displayImage = (url, itemRef) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = url;
+        imgElement.className = 'uploaded-image';
+        imgElement.addEventListener('click', () => {
+            printImage(url);
+        });
+        imagesContainer.appendChild(imgElement);
+    };
+
+    const printImage = (url) => {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Print Image</title>
+                <style>
+                    body {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                    }
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="${url}" />
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    };
+
+    // Load images initially
+    loadImages();
+
+    // Set an interval to auto-refresh the images every 30 seconds
+    setInterval(loadImages, 20000); // 30000 milliseconds = 30 seconds
+});

@@ -35,15 +35,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(resultImg.src);
                 const blob = await response.blob();
 
+                // Generate a unique file name
+                const uniqueFileName = `face_swap_result_${Date.now()}.jpg`;
+
                 // Upload blob to Firebase Storage
                 const storageRef = storage.ref();
-                const imageRef = storageRef.child('images/face_swap_result.jpg');
+                const imageRef = storageRef.child(`images/${uniqueFileName}`);
                 await imageRef.put(blob);
 
                 // Get the download URL
                 const downloadURL = await imageRef.getDownloadURL();
 
                 console.log('Image uploaded successfully:', downloadURL);
+                alert('Image has been successfully saved!'); // Display pop-up message
+
+                // Change button color to green
+                saveButton.classList.add('clicked');
             } catch (error) {
                 console.error('Error uploading the image:', error);
             }
