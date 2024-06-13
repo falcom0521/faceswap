@@ -24,8 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const storageRef = storage.ref().child('images/');
             const listResult = await storageRef.listAll();
 
+            // Reverse the order of items for LIFO display
+            const items = listResult.items.reverse();
+
             // Iterate through each item in the folder and get the download URL
-            for (const itemRef of listResult.items) {
+            for (const itemRef of items) {
                 const downloadURL = await itemRef.getDownloadURL();
                 displayImage(downloadURL, itemRef);
             }
@@ -93,6 +96,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load images initially
     loadImages();
-
-
 });
