@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Get the download URL
                 const downloadURL = await imageRef.getDownloadURL();
 
-                console.log('Image uploaded successfully:', downloadURL);
+                console.log('Image uploaded successfully:');
                 alert('Image has been successfully saved!'); // Display pop-up message
 
                 // Change button color to green
