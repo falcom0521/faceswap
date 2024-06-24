@@ -35,22 +35,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(resultImg.src);
                 const blob = await response.blob();
 
-                // Generate a unique file name
-                const uniqueFileName = `face_swap_result_${Date.now()}.jpg`;
+                // Optional: Increase the quality if the blob comes from a canvas
+                // Assuming you have a canvas context available
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.src = resultImg.src;
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(async (blob) => {
+                        // Generate a unique file name
+                        const uniqueFileName = `face_swap_result_${Date.now()}.jpg`;
 
-                // Upload blob to Firebase Storage
-                const storageRef = storage.ref();
-                const imageRef = storageRef.child(`images/${uniqueFileName}`);
-                await imageRef.put(blob);
+                        // Upload blob to Firebase Storage
+                        const storageRef = storage.ref();
+                        const imageRef = storageRef.child(`images/${uniqueFileName}`);
+                        await imageRef.put(blob);
 
-                // Get the download URL
-                const downloadURL = await imageRef.getDownloadURL();
+                        // Get the download URL
+                        const downloadURL = await imageRef.getDownloadURL();
 
-                console.log('Image uploaded successfully:');
-                alert('Image has been successfully saved!'); // Display pop-up message
+                        console.log('Image uploaded successfully:', downloadURL);
+                        alert('Image has been successfully saved!'); // Display pop-up message
 
-                // Change button color to green
-                saveButton.classList.add('clicked');
+                        // Change button color to green
+                        saveButton.classList.add('clicked');
+                    }, 'image/jpeg', 1.0); // Adjust quality here
+                };
             } catch (error) {
                 console.error('Error uploading the image:', error);
             }
