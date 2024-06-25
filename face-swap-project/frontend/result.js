@@ -1,11 +1,11 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDgK4fxaRYdR9R19NgK_6zvNbNehit4E5s",
-    authDomain: "faceswap-36eff.firebaseapp.com",
-    projectId: "faceswap-36eff",
-    storageBucket: "faceswap-36eff.appspot.com",
-    messagingSenderId: "807539515423",
-    appId: "1:807539515423:web:6c22ec7b44601a4e97f52a"
+    apiKey: "AIzaSyC6X-mCAe2wi2-JzaBcrNMm8ifXsImQhW4s",
+    authDomain: "faceswap-d6776.firebaseapp.com",
+    projectId: "faceswap-d6776",
+    storageBucket: "faceswap-d6776.appspot.com",
+    messagingSenderId: "53495876308",
+    appId: "1:53495876308:web:6bd6f2d807a8145b698941"
 };
 
 // Initialize Firebase
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Get the download URL
                         const downloadURL = await imageRef.getDownloadURL();
 
-                        console.log('Image uploaded successfully:', downloadURL);
+                        console.log('Image uploaded successfully:');
                         alert('Image has been successfully saved!'); // Display pop-up message
 
                         // Change button color to green

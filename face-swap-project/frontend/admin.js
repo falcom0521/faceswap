@@ -1,11 +1,11 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDgK4fxaRYdR9R19NgK_6zvNbNehit4E5s",
-    authDomain: "faceswap-36eff.firebaseapp.com",
-    projectId: "faceswap-36eff",
-    storageBucket: "faceswap-36eff.appspot.com",
-    messagingSenderId: "807539515423",
-    appId: "1:807539515423:web:6c22ec7b44601a4e97f52a"
+    apiKey: "AIzaSyC6X-mCAe2wi2-JzaBcrNMm8ifXsImQhW4s",
+    authDomain: "faceswap-d6776.firebaseapp.com",
+    projectId: "faceswap-d6776",
+    storageBucket: "faceswap-d6776.appspot.com",
+    messagingSenderId: "53495876308",
+    appId: "1:53495876308:web:6bd6f2d807a8145b698941"
 };
 
 // Initialize Firebase
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Reference to the images folder
-            const storageRef = storage.ref().child('images/');
+            const storageRef = storage.ref().child('images');
             const listResult = await storageRef.listAll();
 
             // Reverse the order of items for LIFO display
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('Are you sure you want to delete all images?')) {
             try {
                 // Reference to the images folder
-                const storageRef = storage.ref().child('images/');
+                const storageRef = storage.ref().child('images');
                 const listResult = await storageRef.listAll();
 
                 for (const itemRef of listResult.items) {
@@ -60,38 +60,33 @@ document.addEventListener('DOMContentLoaded', () => {
         imgElement.src = url;
         imgElement.className = 'uploaded-image';
         imgElement.addEventListener('click', () => {
-            printImage(url);
+            createAndDownloadCanvasImage(url, itemRef.name); // Download image on click
         });
         imagesContainer.appendChild(imgElement);
     };
 
-    const printImage = (url) => {
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Print Image</title>
-                <style>
-                    body {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100vh;
-                        margin: 0;
-                    }
-                    img {
-                        max-width: 100%;
-                        max-height: 100%;
-                    }
-                </style>
-            </head>
-            <body>
-                <img src="${url}" />
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
+    const createAndDownloadCanvasImage = (url, filename) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // This is important for CORS
+
+        img.onload = () => {
+            const scaleFactor = 2; // Increase scale factor for higher resolution
+            canvas.width = img.width * scaleFactor;
+            canvas.height = img.height * scaleFactor;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Adjust the quality here
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg', 1.0); // 1.0 indicates the highest quality
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        img.src = url;
     };
 
     // Load images initially
