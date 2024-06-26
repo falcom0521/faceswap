@@ -108,8 +108,8 @@ button.clicked {
 }
 
 .target-image {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 180px;
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 10px;
@@ -238,7 +238,7 @@ button.clicked {
 
 #result {
     width: 100%;
-    max-width: 640px;
+    max-width: 400px;
     height: auto;
     border: 4px solid #ccc;
     border-radius: 10px;
