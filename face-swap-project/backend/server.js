@@ -9,7 +9,7 @@ const port = 3000;
 
 app.use(bodyParser.json({ limit: "10mb" }));
 
-const api_key = "SG_3f20775ddc4db85b";
+const api_key = "SG_6b9a0f63bc4adf1e";
 const url = "https://api.segmind.com/v1/faceswap-v2";
 
 // Function to convert image to base64
