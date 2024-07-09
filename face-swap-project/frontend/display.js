@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             reader.readAsDataURL(blob);
         } catch (error) {
             console.error('Error swapping faces:', error.message); // Log only the error message
-            alert('An error occurred while swapping faces. Please try again.');
+            alert('Error swapping faces: ' + error.message);
         }
     });
 
