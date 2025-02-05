@@ -54,44 +54,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     swapButton.addEventListener('click', async () => {
-        swapButton.classList.add('clicked'); // Add the 'clicked' class when the button is clicked
+        if (!selectedTargetImage) {
+            alert("Please select a target image first.");
+            return;
+        }
+    
+        // Change button to loader
+        swapButton.disabled = true;
+        swapButton.innerHTML = '<span class="loader"></span> Processing...';
+        
         try {
             const sourceImg = dataUrl.split(',')[1];
             const response = await fetch(selectedTargetImage);
             const blob = await response.blob();
             const reader = new FileReader();
-
+    
             reader.onloadend = async () => {
-                const targetImg = reader.result.split(',')[1]; // Get base64 data from the selected image
-
+                const targetImg = reader.result.split(',')[1];
+    
                 const response = await fetch('/faceswap', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ sourceImg, targetImg }) // Update payload to include base64 data
+                    body: JSON.stringify({ sourceImg, targetImg })
                 });
-
+    
                 if (!response.ok) {
                     throw new Error('Failed to swap faces');
                 }
-
+    
                 const data = await response.json();
                 if (data.image) {
-                    console.log('Face swap successful'); // Log a concise message
+                    console.log('Face swap successful');
                     localStorage.setItem('swappedImage', `data:image/jpeg;base64,${data.image}`);
                     window.location.href = 'result.html';
                 } else {
                     throw new Error('Invalid response data');
                 }
             };
-
+    
             reader.readAsDataURL(blob);
         } catch (error) {
-            console.error('Error swapping faces:', error.message); // Log only the error message
+            console.error('Error swapping faces:', error.message);
             alert('Error swapping faces: ' + error.message);
+    
+            // Reset button on failure
+            swapButton.disabled = false;
+            swapButton.innerHTML = 'Swap Faces';
         }
     });
+    
 
     const backButton = document.getElementById('backButton');
     if (backButton) {

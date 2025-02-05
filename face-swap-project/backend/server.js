@@ -9,7 +9,7 @@ const port = 3000;
 
 app.use(bodyParser.json({ limit: "10mb" }));
 
-const api_key = "SG_1740a5f52efee94a";
+const api_key = "SG_daa6c6bb7e8e4b05";
 const url = "https://api.segmind.com/v1/sd2.1-faceswapper";
 
 // Serve frontend files
